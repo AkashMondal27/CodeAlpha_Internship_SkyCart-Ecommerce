@@ -68,79 +68,79 @@ const OrderPage = () => {
     // =========================
     // DOWNLOAD PDF
     // =========================
-  const handleDownloadPDF = async () => {
-    if (!invoiceRef.current) return;
+    const handleDownloadPDF = async () => {
+        if (!invoiceRef.current) return;
 
-    try {
-        setPdfLoading(true);
+        try {
+            setPdfLoading(true);
 
-        const element = invoiceRef.current;
+            const element = invoiceRef.current;
 
-        const dataUrl = await toPng(element, {
-            quality: 1,
-            pixelRatio: 2,
-            backgroundColor: "#ffffff",
-            cacheBust: true,
-        });
+            const dataUrl = await toPng(element, {
+                quality: 1,
+                pixelRatio: 2,
+                backgroundColor: "#ffffff",
+                cacheBust: true,
+            });
 
-        const img = new Image();
-        img.src = dataUrl;
+            const img = new Image();
+            img.src = dataUrl;
 
-        await new Promise((resolve, reject) => {
-            img.onload = resolve;
-            img.onerror = reject;
-        });
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+            });
 
-        const pdf = new jsPDF({
-            orientation: "portrait",
-            unit: "mm",
-            format: "a4",
-        });
+            const pdf = new jsPDF({
+                orientation: "portrait",
+                unit: "mm",
+                format: "a4",
+            });
 
-        const pageWidth = 210;
-        const pageHeight = 297;
+            const pageWidth = 210;
+            const pageHeight = 297;
 
-        const margin = 8;
+            const margin = 8;
 
-        const availableWidth = pageWidth - margin * 2;
-        const availableHeight = pageHeight - margin * 2;
+            const availableWidth = pageWidth - margin * 2;
+            const availableHeight = pageHeight - margin * 2;
 
-        const ratio = img.width / img.height;
+            const ratio = img.width / img.height;
 
-        let width = availableWidth;
-        let height = width / ratio;
+            let width = availableWidth;
+            let height = width / ratio;
 
-        // Fit into ONE A4 page
-        if (height > availableHeight) {
-            height = availableHeight;
-            width = height * ratio;
+            // Fit into ONE A4 page
+            if (height > availableHeight) {
+                height = availableHeight;
+                width = height * ratio;
+            }
+
+            const x = (pageWidth - width) / 2;
+            const y = (pageHeight - height) / 2;
+
+            pdf.addImage(
+                dataUrl,
+                "PNG",
+                x,
+                y,
+                width,
+                height
+            );
+
+            const fileName =
+                order?.invoiceNumber ||
+                `INV-${order?._id?.slice(-8).toUpperCase()}`;
+
+            pdf.save(`${fileName}.pdf`);
+
+        } catch (error) {
+            console.error("PDF download failed:", error);
+            alert("Unable to create PDF. Please try again.");
+        } finally {
+            setPdfLoading(false);
         }
-
-        const x = (pageWidth - width) / 2;
-        const y = (pageHeight - height) / 2;
-
-        pdf.addImage(
-            dataUrl,
-            "PNG",
-            x,
-            y,
-            width,
-            height
-        );
-
-        const fileName =
-            order?.invoiceNumber ||
-            `INV-${order?._id?.slice(-8).toUpperCase()}`;
-
-        pdf.save(`${fileName}.pdf`);
-
-    } catch (error) {
-        console.error("PDF download failed:", error);
-        alert("Unable to create PDF. Please try again.");
-    } finally {
-        setPdfLoading(false);
-    }
-};
+    };
 
     // =========================
     // LOADING
@@ -209,19 +209,29 @@ const OrderPage = () => {
 
     const orderDate = order.createdAt
         ? new Date(order.createdAt).toLocaleDateString("en-IN", {
-              day: "2-digit",
-              month: "long",
-              year: "numeric",
-          })
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        })
         : "—";
 
     const paymentDate = order.paidAt
         ? new Date(order.paidAt).toLocaleDateString("en-IN", {
-              day: "2-digit",
-              month: "long",
-              year: "numeric",
-          })
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        })
         : null;
+
+    const deliveredDate = order.deliveredAt
+        ? new Date(order.deliveredAt).toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        })
+        : null;
+
+
 
     // =========================
     // ADDRESS
@@ -278,9 +288,9 @@ const OrderPage = () => {
     const getPrice = (item) => {
         return Number(
             item.price ??
-                item.product?.price ??
-                item.product?.sellingPrice ??
-                0
+            item.product?.price ??
+            item.product?.sellingPrice ??
+            0
         );
     };
 
@@ -315,7 +325,7 @@ const OrderPage = () => {
 
     return (
         <><style>
-    {`
+            {`
         @media print {
 
             @page {
@@ -379,21 +389,21 @@ const OrderPage = () => {
             }
         }
     `}
-</style>
+        </style>
 
 
             <div className="min-h-screen bg-muted/30 py-6 sm:py-10 px-3 sm:px-6">
-            <div className="print-hidden mx-auto  w-full max-w-4xl">
-    <Button
-        variant="ghost"
-        onClick={() => navigate(-1)}
-        className="gap-2 px-2"
-    >
-        <ArrowLeft className="h-4 w-4" />
-        Go Back
-    </Button>
-</div>
-             
+                <div className="print-hidden mx-auto  w-full max-w-4xl">
+                    <Button
+                        variant="ghost"
+                        onClick={() => navigate(-1)}
+                        className="gap-2 px-2"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Go Back
+                    </Button>
+                </div>
+
                 {/* =========================
                     ACTION BUTTONS
                 ========================= */}
@@ -481,11 +491,10 @@ const OrderPage = () => {
                             <div>
                                 <div className="flex items-center gap-2">
                                     <span
-                                        className={`h-2.5 w-2.5 rounded-full ${
-                                            isPaid
-                                                ? "bg-green-500"
-                                                : "bg-yellow-500"
-                                        }`}
+                                        className={`h-2.5 w-2.5 rounded-full ${isPaid
+                                            ? "bg-green-500"
+                                            : "bg-yellow-500"
+                                            }`}
                                     />
 
                                     <h2 className="text-lg font-bold tracking-tight">
@@ -549,11 +558,10 @@ const OrderPage = () => {
                                 </p>
 
                                 <p
-                                    className={`mt-1 text-sm font-semibold ${
-                                        isPaid
-                                            ? "text-green-600"
-                                            : "text-yellow-600"
-                                    }`}
+                                    className={`mt-1 text-sm font-semibold ${isPaid
+                                        ? "text-green-600"
+                                        : "text-yellow-600"
+                                        }`}
                                 >
                                     {isPaid
                                         ? "PAID"
@@ -627,61 +635,61 @@ const OrderPage = () => {
                         {/* Desktop table */}
                         <div className="mt-5 hidden overflow-x-auto sm:block">
                             <table className="w-full table-fixed border-collapse">
-    <thead>
-        <tr className="border-y border-gray-200 text-left">
+                                <thead>
+                                    <tr className="border-y border-gray-200 text-left">
 
-            <th className="w-[55%] px-2 py-2 text-xs font-semibold uppercase text-gray-500">
-                Product
-            </th>
+                                        <th className="w-[55%] px-2 py-2 text-xs font-semibold uppercase text-gray-500">
+                                            Product
+                                        </th>
 
-            <th className="w-[10%] px-2 py-2 text-center text-xs font-semibold uppercase text-gray-500">
-                Qty
-            </th>
+                                        <th className="w-[10%] px-2 py-2 text-center text-xs font-semibold uppercase text-gray-500">
+                                            Qty
+                                        </th>
 
-            <th className="w-[17.5%] px-2 py-2 text-right text-xs font-semibold uppercase text-gray-500">
-                Price
-            </th>
+                                        <th className="w-[17.5%] px-2 py-2 text-right text-xs font-semibold uppercase text-gray-500">
+                                            Price
+                                        </th>
 
-            <th className="w-[17.5%] px-2 py-2 text-right text-xs font-semibold uppercase text-gray-500">
-                Total
-            </th>
+                                        <th className="w-[17.5%] px-2 py-2 text-right text-xs font-semibold uppercase text-gray-500">
+                                            Total
+                                        </th>
 
-        </tr>
-    </thead>
+                                    </tr>
+                                </thead>
 
-    <tbody>
-        {items.map((item, index) => (
-            <tr
-                key={
-                    item._id ||
-                    item.product?._id ||
-                    index
-                }
-                className="border-b border-gray-100 last:border-b-0"
-            >
+                                <tbody>
+                                    {items.map((item, index) => (
+                                        <tr
+                                            key={
+                                                item._id ||
+                                                item.product?._id ||
+                                                index
+                                            }
+                                            className="border-b border-gray-100 last:border-b-0"
+                                        >
 
-                <td className="break-words px-2 py-2 text-sm font-medium">
-                    {getProductName(item)}
-                </td>
+                                            <td className="break-words px-2 py-2 text-sm font-medium">
+                                                {getProductName(item)}
+                                            </td>
 
-                <td className="px-2 py-2 text-center text-sm">
-                    {getQuantity(item)}
-                </td>
+                                            <td className="px-2 py-2 text-center text-sm">
+                                                {getQuantity(item)}
+                                            </td>
 
-                <td className="px-2 py-2 text-right text-sm">
-                    ₹
-                    {getPrice(item).toLocaleString("en-IN")}
-                </td>
+                                            <td className="px-2 py-2 text-right text-sm">
+                                                ₹
+                                                {getPrice(item).toLocaleString("en-IN")}
+                                            </td>
 
-                <td className="px-2 py-2 text-right text-sm font-semibold">
-                    ₹
-                    {getItemTotal(item).toLocaleString("en-IN")}
-                </td>
+                                            <td className="px-2 py-2 text-right text-sm font-semibold">
+                                                ₹
+                                                {getItemTotal(item).toLocaleString("en-IN")}
+                                            </td>
 
-            </tr>
-        ))}
-    </tbody>
-</table>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
 
                         {/* Mobile items */}
@@ -791,7 +799,7 @@ const OrderPage = () => {
                             Payment
                         </h2>
 
-                        <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-3">
+                        <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                             <div>
                                 <p className="text-xs text-gray-500">
                                     Method
@@ -808,11 +816,10 @@ const OrderPage = () => {
                                 </p>
 
                                 <p
-                                    className={`mt-1 text-sm font-semibold ${
-                                        isPaid
-                                            ? "text-green-600"
-                                            : "text-yellow-600"
-                                    }`}
+                                    className={`mt-1 text-sm font-semibold ${isPaid
+                                        ? "text-green-600"
+                                        : "text-yellow-600"
+                                        }`}
                                 >
                                     {paymentStatus}
                                 </p>
@@ -825,6 +832,16 @@ const OrderPage = () => {
 
                                 <p className="mt-1 text-sm font-medium">
                                     {paymentDate || "—"}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p className="text-xs text-gray-500">
+                                    Delivered On
+                                </p>
+
+                                <p className="mt-1 text-sm font-medium">
+                                    {deliveredDate || "—"}
                                 </p>
                             </div>
                         </div>
@@ -877,112 +894,3 @@ const OrderPage = () => {
 export default OrderPage;
 
 
-
-
-// import { server } from "@/main";
-// import axios from "axios";
-// import React, { useEffect, useState } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
-// import Cookies from "js-cookie";
-// import Loading from "@/components/Loading";
-// import { Button } from "@/components/ui/button";
-// import { ArrowRight, ShoppingBag } from "lucide-react";
-// import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-
-// const OrderPage = () => {
-//     const { id } = useParams();
-//     const navigate = useNavigate();
-
-//     const [order, setOrder] = useState(null);
-//     const [loading, setLoading] = useState(true);
-
-//     useEffect(() => {
-//         const fetchOrder = async () => {
-//             try {
-//                 const { data } = await axios.get(
-//                     `${server}/api/v1/order/${id}`,
-//                     {
-//                         headers: {
-//                             token: Cookies.get("token"),
-//                         },
-//                     }
-//                 );
-
-//                 setOrder(data.data);
-//             } catch (error) {
-//                 console.log(error);
-//                 setOrder(null);
-//             } finally {
-//                 setLoading(false);
-//             }
-//         };
-
-//         if (id) {
-//             fetchOrder();
-//         }
-//     }, [id]);
-
-//     if (loading) {
-//         return <Loading />;
-//     }
-
-//     // No order with this ID
-//     if (!order) {
-//         return (
-//             <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
-//                 <div className="w-full max-w-lg text-center">
-
-//                     <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-muted">
-//                         <ShoppingBag
-//                             className="h-12 w-12 text-gray-500"
-//                             strokeWidth={1.5}
-//                         />
-//                     </div>
-
-//                     <h1 className="text-2xl sm:text-3xl font-bold">
-//                         Order Not Found
-//                     </h1>
-
-//                     <p className="mx-auto mt-3 max-w-md text-sm sm:text-base leading-6 text-gray-500">
-//                         We couldn't find any order associated with this
-//                         order ID. Please check the order ID and try again.
-//                     </p>
-
-//                     <Button
-//                         onClick={() => navigate("/order")}
-//                         className="mt-7 w-full sm:w-auto"
-//                     >
-//                         View My Orders
-//                         <ArrowRight className="ml-2 h-4 w-4" />
-//                     </Button>
-
-//                 </div>
-//             </div>
-//         );
-//     }
-
-//     return (
-//         <div className="container mx-auto py-6 px-4">
-//             <Card className={ "mb-6"}>
-//                 <CardHeader>
-//                     <div className=" flex justify-between">
-//                     <CardTitle className="text-2xl font-bold"> Order Details</CardTitle>
-//                     <Button onClick={()=>window.print()}>Print Order</Button>
-//                     </div>
-//                 </CardHeader>
-
-//                 <div className="grid grid-col-1 lg:grid-cols-2 gap-6">
-//                     <div>
-//                         <h2 className=" text-xl font-semibold mb-4">
-//                                Order Summary 
-//                         </h2>
-
-//                         {/* want to show order status , order */}
-//                     </div>
-//                 </div>
-//             </Card>
-//         </div>
-//     );
-// };
-
-// export default OrderPage;

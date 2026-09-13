@@ -114,7 +114,7 @@ const OrdersAdmin = () => {
 
       toast.error(
         error?.response?.data?.message ||
-          "Failed to update order status"
+        "Failed to update order status"
       );
     } finally {
       setUpdatingOrder(null);
@@ -135,12 +135,12 @@ const OrdersAdmin = () => {
 
       const dateFormats = date
         ? [
-            date.toLocaleDateString("en-IN"),
-            date.toLocaleDateString("en-IN").replaceAll("/", "-"),
-            date.toISOString().split("T")[0],
-            moment(date).format("DD MMMM YYYY"),
-            moment(date).format("DD MMM YYYY"),
-          ]
+          date.toLocaleDateString("en-IN"),
+          date.toLocaleDateString("en-IN").replaceAll("/", "-"),
+          date.toISOString().split("T")[0],
+          moment(date).format("DD MMMM YYYY"),
+          moment(date).format("DD MMM YYYY"),
+        ]
         : [];
 
       return (
@@ -257,31 +257,31 @@ const OrdersAdmin = () => {
     );
   };
 
- 
- const StatusSelect = ({ order }) => {
-  const status = order?.status || "Pending";
-  const isUpdating = updatingOrder === order._id;
 
-  return (
-    <Select
-      value={status}
-      onValueChange={(value) => updateOrderStatus(order._id, value)}
-      disabled={isUpdating}
-    >
-      <SelectTrigger className="h-9 w-[130px] border-border/70 bg-background text-xs font-medium">
-        <SelectValue placeholder="Status" />
-      </SelectTrigger>
+  const StatusSelect = ({ order }) => {
+    const status = order?.status || "Pending";
+    const isUpdating = updatingOrder === order._id;
 
-      <SelectContent>
-        <SelectItem value="Pending">Pending</SelectItem>
-        <SelectItem value="Processing">Processing</SelectItem>
-        <SelectItem value="Shipped">Shipped</SelectItem>
-        <SelectItem value="Delivered">Delivered</SelectItem>
-        <SelectItem value="Cancelled">Cancelled</SelectItem>
-      </SelectContent>
-    </Select>
-  );
-};
+    return (
+      <Select
+        value={status}
+        onValueChange={(value) => updateOrderStatus(order._id, value)}
+        disabled={isUpdating}
+      >
+        <SelectTrigger className="h-9 w-[130px] border-border/70 bg-background text-xs font-medium">
+          <SelectValue placeholder="Status" />
+        </SelectTrigger>
+
+        <SelectContent>
+          <SelectItem value="Pending">Pending</SelectItem>
+          <SelectItem value="Processing">Processing</SelectItem>
+          <SelectItem value="Shipped">Shipped</SelectItem>
+          <SelectItem value="Delivered">Delivered</SelectItem>
+          <SelectItem value="Cancelled">Cancelled</SelectItem>
+        </SelectContent>
+      </Select>
+    );
+  };
 
   return (
     <div className="min-h-full space-y-6 p-4 sm:p-6 lg:p-8">
@@ -310,9 +310,8 @@ const OrdersAdmin = () => {
           className="w-full sm:w-auto"
         >
           <RefreshCw
-            className={`mr-2 h-4 w-4 ${
-              refreshing ? "animate-spin" : ""
-            }`}
+            className={`mr-2 h-4 w-4 ${refreshing ? "animate-spin" : ""
+              }`}
           />
           Refresh Orders
         </Button>
@@ -419,12 +418,17 @@ const OrdersAdmin = () => {
                     </TableHead>
 
                     <TableHead className="whitespace-nowrap font-semibold">
-                      Date
+                      Order on
+                    </TableHead>
+
+                    <TableHead className="whitespace-nowrap font-semibold">
+                      Delivered on
                     </TableHead>
 
                     <TableHead className="whitespace-nowrap text-right font-semibold">
                       Action
                     </TableHead>
+
                   </TableRow>
                 </TableHeader>
 
@@ -491,21 +495,43 @@ const OrdersAdmin = () => {
                             <span className="text-sm font-medium">
                               {order?.createdAt
                                 ? moment(order.createdAt).format(
-                                    "DD MMM YYYY"
-                                  )
+                                  "DD MMM YYYY"
+                                )
                                 : "N/A"}
                             </span>
 
                             <span className="text-xs text-muted-foreground">
                               {order?.createdAt
                                 ? moment(order.createdAt).format(
-                                    "hh:mm A"
-                                  )
+                                  "hh:mm A"
+                                )
                                 : ""}
                             </span>
                           </div>
                         </div>
                       </TableCell>
+
+                      {/* Delivered Date */}
+                      <TableCell>
+                        <div className="flex items-center gap-2 whitespace-nowrap">
+                          <CalendarDays className="h-4 w-4 text-muted-foreground" />
+
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium">
+                              {order?.deliveredAt
+                                ? moment(order.deliveredAt).format("DD MMM YYYY")
+                                : "Not delivered"}
+                            </span>
+
+                            {order?.deliveredAt && (
+                              <span className="text-xs text-muted-foreground">
+                                {moment(order.deliveredAt).format("hh:mm A")}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </TableCell>
+
 
                       {/* Action */}
                       <TableCell>
@@ -554,8 +580,8 @@ const OrdersAdmin = () => {
                     <p className="mt-1 text-xs text-muted-foreground">
                       {order?.createdAt
                         ? moment(order.createdAt).format(
-                            "DD MMM YYYY, hh:mm A"
-                          )
+                          "DD MMM YYYY, hh:mm A"
+                        )
                         : "N/A"}
                     </p>
                   </div>
@@ -608,7 +634,7 @@ const OrdersAdmin = () => {
                       variant="outline"
                       size="sm"
                       className="h-9 flex-1 sm:w-[100px] sm:flex-none"
-                      // className="flex-1 sm:flex-none"
+                    // className="flex-1 sm:flex-none"
                     >
                       <Link to={`/order/${order._id}`}>
                         <Eye className="mr-2 h-4 w-4" />
