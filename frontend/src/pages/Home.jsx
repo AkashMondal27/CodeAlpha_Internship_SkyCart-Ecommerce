@@ -10,12 +10,18 @@ const Home = () => {
     return (
         <main className="w-full mb-6">
             <Hero />
-
+            
             <div className="top products mt-4 px-4">
-                <h1 className="text-3xl font-bold mb-4">
+                {/* <h1 className="text-3xl font-bold mb-4">
+                    Latest Products
+                </h1> */}
+                {/* Page Title */}
+                <h1 className="mt-2 mb-3 text-center text-3xl font-bold tracking-tight">
                     Latest Products
                 </h1>
-                
+                <div className='border border-gray-400/20 dark:border-blue-900/50 mb-6 ' />
+
+
 
                 <div className=" md:px-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
 

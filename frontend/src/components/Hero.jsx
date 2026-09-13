@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
@@ -13,9 +14,14 @@ const Hero = () => {
             className="relative w-full h-[70vh] bg-cover bg-center"
             style={{
                 backgroundImage:
-                    'linear-gradient(rgba(0,0,0,0.32), rgba(0,0,0,0.32)), url("/bg image2.jpg")',
+                    'linear-gradient(rgba(0,0,0,0.32), rgba(0,0,0,0.32)), url("/image.png")',
             }}
         >
+
+             
+
+            
+          
             {/* Hero Content */}
             <div className="flex items-center justify-center h-full px-5 text-center text-white">
                 <div className="max-w-3xl">
@@ -26,10 +32,10 @@ const Hero = () => {
                     </p>
 
                     {/* Main Heading */}
-                    <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 drop-shadow-lg">
+                    <h1 className=" text-gray-200 text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 drop-shadow-lg">
                         Everything You Love,
                         <br />
-                        <span className="text-blue-400">
+                        <span className="text-green-900/90">
                             All in One Place.
                         </span>
                     </h1>
@@ -45,7 +51,7 @@ const Hero = () => {
                         size="lg"
                         onClick={() => navigate("/products")}
                         className="
-                            group bg-orange-500 hover:bg-orange-600 text-white font-semibold px-7 py-6  rounded-xl
+                            group bg-amber-100/50 hover:bg-amber-100 text-orange-700 font-semibold px-7 py-6  rounded-xl
                             shadow-xl transition-all duration-300 hover:scale-105 ">
                                    Explore Products
                         <ArrowRight
