@@ -1,10 +1,11 @@
 import { Home as HomeIcon, ShoppingBag, LogIn, LogOut, ShoppingCart, LayoutDashboard, User } from 'lucide-react';
-import React from 'react'
+import React, { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { ModeToggle } from './mode-toggle';
 import { UserData } from '@/context/UserContext';
 import { CartData } from '@/context/CartContext';
+import RequestAdminAccessDialog from "./RequestAdminAccessDialog";
 
 
 
@@ -13,6 +14,7 @@ const Navbar = () => {
     const { user } = UserData();
     const navigate = useNavigate();
     const location = useLocation();
+    const [adminRequestOpen, setAdminRequestOpen] = useState(false);
 
     const { isAuth, logoutUser } = UserData();
 
@@ -22,10 +24,12 @@ const Navbar = () => {
     const logoutHandler = () => {
         logoutUser(navigate, fetchCart);
     }
-
+  
 
 
     return (
+
+
 
         <div className="sticky rounded-full top-0 z-50  w-full border-b border-zinc-200
                         bg-zinc-50  shadow-sm dark:border-blue-900/40 dark:bg-[#080d18]
@@ -145,7 +149,7 @@ const Navbar = () => {
                                     ) : (
                                         <>
                                             {/* Admin only */}
-                                            {user?.role === "admin" && (
+                                            {user?.role === "admin" ? (
                                                 <DropdownMenuItem
                                                     className="cursor-pointer gap-2"
                                                     onClick={() => navigate("/admin/dashboard")}
@@ -153,8 +157,15 @@ const Navbar = () => {
                                                     <LayoutDashboard className="h-4 w-4" />
                                                     <span>Dashboard</span>
                                                 </DropdownMenuItem>
+                                            ) : (
+                                                <DropdownMenuItem
+                                                    className="cursor-pointer gap-2"
+                                                    onClick={() => setAdminRequestOpen(true)}
+                                                >
+                                                    <User className="h-4 w-4" />
+                                                    <span>Admin Access</span>
+                                                </DropdownMenuItem>
                                             )}
-
                                             {/* Available for all users */}
                                             <DropdownMenuItem
                                                 className="cursor-pointer gap-2"
@@ -177,11 +188,19 @@ const Navbar = () => {
 
                             </DropdownMenuContent>
                         </DropdownMenu>
+
+                         <RequestAdminAccessDialog
+        user={user}
+        open={adminRequestOpen}
+        onOpenChange={setAdminRequestOpen}
+    />
                     </li>
 
 
                 </ul>
             </div>
+
+            
         </div>
     )
 }
