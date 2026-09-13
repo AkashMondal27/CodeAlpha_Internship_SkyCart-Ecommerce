@@ -8,7 +8,7 @@ import { ProductProvider } from './context/ProductContext'
 import { CartProvider } from './context/CartContext'
 
 
-export const server = "http://localhost:5000"
+export const server = "https://codealpha-internship-skycart-ecommerce.onrender.com"
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
