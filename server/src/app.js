@@ -4,8 +4,17 @@ import cors from "cors"
 const app = express();
 
 // CORS
+// app.use(cors({
+//     origin: "http://localhost:5173", // your React frontend
+//     credentials: true
+// }));
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://code-alpha-internship-sky-cart-ecom.vercel.app"
+];
+
 app.use(cors({
-    origin: "http://localhost:5173", // your React frontend
+    origin: allowedOrigins,
     credentials: true
 }));
 
