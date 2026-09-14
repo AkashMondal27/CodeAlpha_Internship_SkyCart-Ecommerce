@@ -11,7 +11,8 @@ class ApiError extends Error {
     ) {
         super(message);      // Call the parent Error class constructor
 
-        this.statuscode = statuscode; // Store the HTTP status code
+        // this.statuscode = statuscode; // Store the HTTP status code
+        this.statusCode = statuscode;
 
         this.data = null;       // Error responses usually don't contain data
 
