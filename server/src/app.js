@@ -42,3 +42,6 @@ app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/address", adddessRoutes);
 app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/stats", statsRoutes);
+
+
+export default app;
