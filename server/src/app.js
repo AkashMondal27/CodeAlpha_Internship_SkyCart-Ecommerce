@@ -45,19 +45,7 @@ app.use("/api/v1/stats", statsRoutes);
 
 
 
-// Global Error Handler
-app.use((err, req, res, next) => {
-    console.error("❌ API Error:", err);
 
-    const statusCode = err.statuscode || 500;
-
-    res.status(statusCode).json({
-        success: false,
-        message: err.message || "Internal Server Error",
-        data: err.data || null,
-        error: err.error || [],
-    });
-});
 
 export default app;
 
