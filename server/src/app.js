@@ -43,6 +43,17 @@ app.use("/api/v1/address", adddessRoutes);
 app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/stats", statsRoutes);
 
+// ========================================
+// KEEP-ALIVE ROUTE
+// ========================================
+
+app.get("/api/v1/keep-alive", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "SkyCart server is alive",
+    timestamp: new Date().toISOString(),
+  });
+});
 
 
 
