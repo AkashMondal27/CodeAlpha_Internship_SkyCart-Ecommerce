@@ -39,8 +39,8 @@ export const UserProvider = ({ children, server }) => {
 
         setBtnLoading(true);
 
-        // make a 15 seconds loading effect 
-        let seconds = 15;
+        // make a 60 seconds loading effect 
+        let seconds = 60;
 
         const toastId = toast.loading(`Sending OTP... ${seconds}s`);
 
@@ -161,13 +161,54 @@ export const UserProvider = ({ children, server }) => {
     //========= User Profile Fetch =========================
     
       
-  const fetchUser = async () => {
-     const token = Cookies.get("token");
+//   const fetchUser = async () => {
+//      const token = Cookies.get("token");
 
-      console.log("TOKEN:", token);
-      console.log("SERVER:", server);
+//       console.log("TOKEN:", token);
+//       console.log("SERVER:", server);
 
-      try {
+      
+
+//       try {
+//         const { data } = await axios.get(
+//             `${server}/api/v1/users/me`,
+//             {
+//                 headers: {
+//                     token: token,
+//                 },
+//             }
+//          );
+
+//          console.log("USER DATA:", data);
+
+//          setIsAuth(true);
+//         //  setUser(data.user);
+//         setUser(data.data); // ✅ FIX
+//          setLoading(false);
+//         } catch (error) {
+//           console.log("ME ERROR:", error.response?.data);
+//           console.log("STATUS:", error.response?.status);
+
+//           setIsAuth(false);
+//           setLoading(false);
+//         }
+//     };
+
+const fetchUser = async () => {
+    const token = Cookies.get("token");
+
+    console.log("TOKEN:", token);
+    console.log("SERVER:", server);
+
+    // User is not logged in
+    if (!token) {
+        setUser(null);
+        setIsAuth(false);
+        setLoading(false);
+        return;
+    }
+
+    try {
         const { data } = await axios.get(
             `${server}/api/v1/users/me`,
             {
@@ -175,21 +216,24 @@ export const UserProvider = ({ children, server }) => {
                     token: token,
                 },
             }
-         );
+        );
 
-         console.log("USER DATA:", data);
+        console.log("USER DATA:", data);
 
-         setIsAuth(true);
-        //  setUser(data.user);
-        setUser(data.data); // ✅ FIX
-         setLoading(false);
-        } catch (error) {
-          console.log("ME ERROR:", error.response?.data);
-          console.log("STATUS:", error.response?.status);
+        setUser(data.data);
+        setIsAuth(true);
 
-          setIsAuth(false);
-          setLoading(false);
-        }
+    } catch (error) {
+        console.log("ME ERROR:", error.response?.data);
+        console.log("STATUS:", error.response?.status);
+
+        Cookies.remove("token");
+        setUser(null);
+        setIsAuth(false);
+
+    } finally {
+        setLoading(false);
+    }
 };
 
      //==================== LogOut User========================

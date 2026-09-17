@@ -6,7 +6,7 @@ const sendOtp = async (email, subject, otp) => {
     const transporter = createTransport({
         host: process.env.SMTP_HOST,
         port: Number(process.env.SMTP_PORT),
-        secure: true,
+        secure: Number(process.env.SMTP_PORT) === 465,
         auth: {
             user: process.env.SMTP_GMAIL,
             pass: process.env.SMTP_PASS
