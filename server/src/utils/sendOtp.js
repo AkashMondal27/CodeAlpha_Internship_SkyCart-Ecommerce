@@ -1,29 +1,44 @@
-import { Resend } from "resend";
+import { BrevoClient } from "@getbrevo/brevo";
 import otpTemplate from "../templates/otp.template.js";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const brevo = new BrevoClient({
+    apiKey: process.env.BREVO_API_KEY,
+});
 
 const sendOtp = async (email, subject, otp) => {
     try {
-        const { data, error } = await resend.emails.send({
-            from: process.env.RESEND_FROM_EMAIL,
-            to: [email],
+        const result = await brevo.transactionalEmails.sendTransacEmail({
+            sender: {
+                name: process.env.BREVO_SENDER_NAME || "SkyCart",
+                email: process.env.BREVO_SENDER_EMAIL,
+            },
+
+            to: [
+                {
+                    email: email,
+                },
+            ],
+
             subject: subject,
-            text: `Your SkyCart OTP is: ${otp}. This OTP will expire in 5 minutes.`,
-            html: otpTemplate(otp),
+
+            textContent: `Your SkyCart OTP is: ${otp}. This OTP will expire in 5 minutes.`,
+
+            htmlContent: otpTemplate(otp),
         });
 
-        if (error) {
-            console.error("Resend email error:", error);
-            throw new Error(error.message || "Failed to send email");
-        }
+        console.log(
+            "OTP email sent successfully:",
+            result?.messageId
+        );
 
-        console.log("OTP email sent successfully:", data?.id);
+        return result;
 
-        return data;
     } catch (error) {
-        console.error("Failed to send OTP:", error);
-        throw error;
+        console.error("Brevo email error:", error);
+
+        throw new Error(
+            error?.message || "Failed to send OTP email"
+        );
     }
 };
 
