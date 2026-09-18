@@ -45,7 +45,7 @@ SkyCart is organized as a two-part full-stack application:
 | Database | External MongoDB | Persistent application data through Mongoose |
 | Payments | External Stripe service | Payment processing through Stripe |
 | Media | External Cloudinary service | Image/media storage and delivery |
-| Email | SMTP/email provider through Nodemailer | OTP and order-confirmation email delivery |
+ | Email | Brevo Transactional Email API | OTP and order-confirmation email delivery |
 
 The repository is intentionally separated into frontend and server applications so that each side can be developed, tested, deployed, and scaled independently.
 
@@ -109,7 +109,7 @@ The dependency configuration includes:
 
 - Stripe
 - Cloudinary
-- Nodemailer
+- Brevo Transactional Email API
 - MongoDB through Mongoose
 - JWT
 - Multer
@@ -117,62 +117,61 @@ The dependency configuration includes:
 
 ---
 
+
+
 # 3. Technology Stack
 
 ## 3.1 Frontend
 
-| Technology | Purpose |
-|---|---|
-| React `19.2.8` | UI and component architecture |
-| React DOM `19.2.8` | Browser rendering |
-| Vite `8.2.2` | Development server and production bundling |
-| React Router DOM `7.18.2` | Client-side routing |
-| Tailwind CSS `4.3.3` | Utility-first styling |
-| `@tailwindcss/vite` | Tailwind/Vite integration |
-| shadcn `4.19.0` | UI component tooling |
-| Base UI React | Accessible UI primitives |
-| Lucide React | Icon system |
-| React Icons | Additional icon library |
-| Axios `1.20.0` | HTTP requests |
-| React Hot Toast | User-facing notifications |
-| Recharts `3.8.0` | Charts and analytics |
-| Swiper `14.2.0` | Sliders/carousels |
-| Embla Carousel React | Carousel functionality |
-| Moment `2.30.1` | Date/time formatting |
-| js-cookie | Browser cookie handling |
-| html-to-image | HTML-to-image conversion |
-| jsPDF | PDF generation |
-| Formspree React | Form submission integration |
-| `@stripe/stripe-js` | Stripe browser integration |
+| Technology                                                                        | Purpose                                    |
+| --------------------------------------------------------------------------------- | ------------------------------------------ |
+| [React](https://react.dev/) `19.2.8`                                              | UI and component architecture              |
+| [React DOM](https://react.dev/reference/react-dom) `19.2.8`                       | Browser rendering                          |
+| [Vite](https://vite.dev/) `8.2.2`                                                 | Development server and production bundling |
+| [React Router DOM](https://reactrouter.com/) `7.18.2`                             | Client-side routing                        |
+| [Tailwind CSS](https://tailwindcss.com/) `4.3.3`                                  | Utility-first styling                      |
+| [@tailwindcss/vite](https://tailwindcss.com/docs/installation/using-vite)         | Tailwind/Vite integration                  |
+| [shadcn/ui](https://ui.shadcn.com/) `4.19.0`                                      | UI component tooling
+| [Lucide React](https://lucide.dev/)                                               | Icon system                                |
+| [React Icons](https://react-icons.github.io/react-icons/)                         | Additional icon library                    |
+| [Axios](https://axios-http.com/) `1.20.0`                                         | HTTP requests                              |
+| [React Hot Toast](https://react-hot-toast.com/)                                   | User-facing notifications                  |
+| [Recharts](https://recharts.github.io/) `3.8.0`                                   | Charts and analytics                       |
+| [Swiper](https://swiperjs.com/) `14.2.0`                                          | Sliders and carousels                      |
+| [Embla Carousel React](https://www.embla-carousel.com/)                           | Carousel functionality                     |
+| [Moment.js](https://momentjs.com/) `2.30.1`                                       | Date/time formatting                       |
+| [js-cookie](https://github.com/js-cookie/js-cookie)                               | Browser cookie handling                    |
+| [html-to-image](https://github.com/bubkoo/html-to-image)                          | HTML-to-image conversion                   |
+| [jsPDF](https://github.com/parallax/jsPDF)                                        | PDF generation                             |
+| [Formspree React](https://help.formspree.io/hc/en-us/articles/360052448772-React) | Form submission integration                |
+|  [@stripe/stripe-js](https://www.npmjs.com/package/@stripe/stripe-js)  `^7.x.x`0`                                   |  Stripe.js integration for frontend payment functionality
 
 ## 3.2 Backend
 
-| Technology | Purpose |
-|---|---|
-| Node.js | Server-side JavaScript runtime |
-| Express `5.2.1` | HTTP API framework |
-| Mongoose `9.9.2` | MongoDB object modeling |
-| MongoDB | Application database |
-| JSON Web Token `9.0.3` | Token-based authentication |
-| bcryptjs `3.0.3` | Password hashing |
-| Multer `2.2.0` | Multipart/file upload processing |
-| Cloudinary `2.10.0` | Image/media service integration |
-| Stripe `22.6.1` | Server-side payment integration |
-| Nodemailer `9.0.5` | Email delivery |
-| CORS `2.8.6` | Cross-origin request handling |
-| dotenv `17.4.2` | Environment configuration |
-| datauri `4.1.0` | Data URI/file conversion support |
+| Technology                                                           | Purpose                                      |
+| -------------------------------------------------------------------- | -------------------------------------------- |
+| [Node.js](https://nodejs.org/)                                       | Server-side JavaScript runtime               |
+| [Express](https://expressjs.com/) `5.2.1`                            | HTTP API framework                           |
+| [Mongoose](https://mongoosejs.com/) `9.9.2`                          | MongoDB object modeling                      |
+| [MongoDB](https://www.mongodb.com/)                                  | Application database                         |
+| [JSON Web Token](https://www.npmjs.com/package/jsonwebtoken) `9.0.3` | Token-based authentication                   |
+| [bcryptjs](https://www.npmjs.com/package/bcryptjs) `3.0.3`           | Password and OTP hashing                     |
+| [Multer](https://github.com/expressjs/multer) `2.2.0`                | Multipart/file upload processing             |
+| [Cloudinary](https://cloudinary.com/) `2.10.0`                       | Image/media storage and delivery  
+| [Brevo](https://developers.brevo.com/) `^6.0.3`                      | Transactional email delivery                 |
+| [CORS](https://www.npmjs.com/package/cors) `2.8.6`                   | Cross-origin request handling                |
+| [dotenv](https://www.npmjs.com/package/dotenv) `17.4.2`              | Environment configuration                    |
+| [datauri](https://www.npmjs.com/package/datauri) `4.1.0`             | Data URI/file conversion support             |
 
-## 3.3 Development tooling
+## 3.3 Development Tooling
 
-| Tool | Purpose |
-|---|---|
-| Vite | Frontend development/build |
-| ESLint | Frontend linting |
-| Nodemon | Backend development auto-reload |
-| shadcn CLI | UI component generation/management |
+| Tool                                         | Purpose                                   |
+| -------------------------------------------- | ----------------------------------------- |
+| [Vite](https://vite.dev/)                    | Frontend development and production build |
+| [ESLint](https://eslint.org/)                | Frontend linting and code quality         |
+| [Nodemon](https://nodemon.io/)               | Backend development auto-reload           |
+| [shadcn CLI](https://ui.shadcn.com/docs/cli) | UI component generation and management    |
 
----
 
 # 4. Architecture
 
@@ -209,7 +208,7 @@ At a high level:
                                       │
                                       ▼
                                 ┌────────────┐
-                                │ Nodemailer │
+                                │ Brevo │
                                 │ OTP/Email  │
                                 └────────────┘
 ```
@@ -689,7 +688,7 @@ server/src/utils/sendOrderConfirmation.js
 server/src/utils/sendOtp.js
 ```
 
-Nodemailer is used for email transport.
+Brevo is used for email transport.
 
 The OTP model is:
 
@@ -807,11 +806,10 @@ CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
-# Email / SMTP
-SMTP_HOST=your_smtp_host
-SMTP_PORT=587
-SMTP_USER=your_smtp_username
-SMTP_PASS=your_smtp_password
+# Brevo
+BREVO_API_KEY=your_brevo_api_key
+BREVO_SENDER_EMAIL=your_verified_sender_email
+BREVO_SENDER_NAME=SkyCart
 ```
 
 
@@ -827,7 +825,7 @@ Install:
 - MongoDB or a MongoDB-compatible hosted database
 - Stripe account/configuration for payment functionality
 - Cloudinary account/configuration for media functionality
-- SMTP/email provider for email functionality
+- - Brevo account/configuration for transactional email functionality
 
 ---
 
@@ -1222,7 +1220,7 @@ Then open the Vite development URL shown in the frontend terminal.
 │ Axios                         │ Multer                      │
 │ Stripe.js                     │ Cloudinary                  │
 │ Recharts                      │ Stripe                      │
-│ Swiper / Embla                │ Nodemailer                  │
+│ Swiper / Embla                │ Brevo                  │
 │ React Hot Toast               │ ApiError / ApiResponse      │
 │ Context API                   │ Auth/Admin middleware       │
 │                               │                             │
